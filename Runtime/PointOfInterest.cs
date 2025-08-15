@@ -1,4 +1,7 @@
+#if DOTWEEN_INSTALLED
 using DG.Tweening;
+#endif
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -39,20 +42,30 @@ namespace StSMapGenerator
             _isAvailable = isAvailable;
 
             var highlight = Color.white;
+#if DOTWEEN_INSTALLED
             var duration = 0.75f;
+#endif
 
             if (isAvailable)
             {
+#if DOTWEEN_INSTALLED
                 _thisImage
                 .DOColor(highlight, duration)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetTarget(_thisImage);
+#else
+                _thisImage.color = highlight;
+#endif
             }
             else
             {
+#if DOTWEEN_INSTALLED
                 _thisImage.DOKill();
                 _thisImage.DOColor(_deactivatedColor, duration * 0.5f)
                     .SetTarget(this);
+#else
+                _thisImage.color = _deactivatedColor;
+#endif
             }
         }
 
@@ -88,11 +101,15 @@ namespace StSMapGenerator
 
         private void SetScale(float scale, float duration)
         {
+#if DOTWEEN_INSTALLED
             transform.DOKill();
 
             (transform as RectTransform)
             .DOScale(scale, duration)
             .SetTarget(transform);
+#else
+            (transform as RectTransform).localScale = Vector2.one * scale;
+#endif
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -107,9 +124,11 @@ namespace StSMapGenerator
 
         private void OnDisable()
         {
+#if DOTWEEN_INSTALLED
             DOTween.Kill(this);
             _thisImage.DOKill();
             transform.DOKill();
+#endif
         }
     }
 }
