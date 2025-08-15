@@ -9,7 +9,7 @@ namespace StSMapGenerator
         [SerializeField] private MapConfig _config;
 
         [SerializeField] private UnityEvent _onMapGenerated;
-        [SerializeField] private RectTransform _boardContainer, _mapBoundingBox, _canvas;
+        [SerializeField] private RectTransform _mapContent, _mapBoundingBox, _canvas;
         [SerializeField] private List<PointOfInterest> _pointsOfInterestPrefabs;
         [SerializeField] private GameObject _pathPrefab;
 
@@ -45,9 +45,9 @@ namespace StSMapGenerator
             _numberOfConnections = 0;
 
             // Parent will get set in MapContentResizer, called by event.
-            _boardContainer.SetParent(_canvas, false);
+            _mapContent.SetParent(_canvas, false);
 
-            DestroyAllChildren(_boardContainer);
+            DestroyAllChildren(_mapContent);
 
             _pointsOfInterest.Clear();
 
@@ -118,7 +118,15 @@ namespace StSMapGenerator
             yPos += Random.Range(-_config.LayerLayout[1].YPaddingFromPreviousLayer * 0.25f, _config.LayerLayout[1].YPaddingFromPreviousLayer * 0.25f) * _config.LayerLayout[floorN].RandomizePosition;
 
             Vector2 pos = new Vector2(xPos, yPos);
-            PointOfInterest instance = Instantiate(_config.GetRandomPOI(thisLayerType), _boardContainer);
+            PointOfInterest instance = null;
+
+            if (thisLayerType != NodeTypes.Custom)
+                instance = Instantiate(_config.GetRandomPOI(thisLayerType), _mapContent);
+            else
+            {
+                instance = Instantiate(_config.GetRandomPOI(_config.LayerLayout[floorN].NodeID), _mapContent);
+            }
+
             instance.SetUpSubSeed(floorN, xNum);
             _pointsOfInterest.Add(instance);
             _numberOfPointsOfInterestsPerFloor[floorN]++;
@@ -307,7 +315,7 @@ namespace StSMapGenerator
                 GameObject lineCreated = Instantiate(_pathPrefab);
                 var lineRectTransform = lineCreated.transform as RectTransform;
 
-                lineRectTransform.SetParent(_boardContainer, false);
+                lineRectTransform.SetParent(_mapContent, false);
                 lineRectTransform.anchoredPosition = pos;
                 lineRectTransform.anchoredPosition -= Vector2.up * (_lineHeight / 2f);
 

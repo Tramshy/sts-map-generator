@@ -28,23 +28,46 @@ namespace StSMapGenerator.InspectorEditor
                 } while (iterator.NextVisible(false));
             }
 
-            GUILayout.Space(50);
+            GUILayout.Space(25);
             GUILayout.Label("PrefabsForNodeTypes");
 
             MapConfig config = (MapConfig)target;
 
-            int amountOfNodeTypes = System.Enum.GetValues(typeof(NodeTypes)).Length;
+            var customNodeTypes = serializedObject.FindProperty("CustomNodeTypes");
+
+            // Subtract 1 for custom enum value
+            int enumLength = System.Enum.GetValues(typeof(NodeTypes)).Length - 1;
+            int amountOfNodeTypes = enumLength;
+
+            if (customNodeTypes != null)
+                amountOfNodeTypes += customNodeTypes.arraySize;
 
             if (_prefabsForNodeTypesProperty.arraySize != amountOfNodeTypes)
                 _prefabsForNodeTypesProperty.arraySize = amountOfNodeTypes;
 
-            for (int i = 0; i < _prefabsForNodeTypesProperty.arraySize; i++)
+            for (int i = 0; i < enumLength; i++)
             {
                 var element = _prefabsForNodeTypesProperty.GetArrayElementAtIndex(i);
                 var enumName = ((NodeTypes)i).ToString();
                 element.FindPropertyRelative("ThisNodeType").enumValueIndex = i;
 
                 EditorGUILayout.PropertyField(element, new GUIContent(enumName));
+            }
+
+            if (customNodeTypes == null)
+                return;
+
+            int customNodeIndex = 0;
+
+            for (int i = enumLength; i < amountOfNodeTypes; i++)
+            {
+                var element = _prefabsForNodeTypesProperty.GetArrayElementAtIndex(i);
+                var customNodeName = customNodeTypes.GetArrayElementAtIndex(customNodeIndex);
+                customNodeIndex++;
+                element.FindPropertyRelative("ThisNodeType").enumValueIndex = enumLength;
+                element.FindPropertyRelative("NodeID").stringValue = customNodeName.stringValue;
+
+                EditorGUILayout.PropertyField(element, new GUIContent(customNodeName.stringValue));
             }
 
             serializedObject.ApplyModifiedProperties();

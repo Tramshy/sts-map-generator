@@ -1,4 +1,4 @@
-#if DOTWEEN
+#if DOTWEEN_INSTALLED
 using DG.Tweening;
 #endif
 
@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 namespace StSMapGenerator
 {
+    // TODO: Make this abstarct and make everything protected and virtual
     public class PointOfInterest : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public List<PointOfInterest> NextPointsOfInterest { get; set; } = new List<PointOfInterest>();
@@ -42,13 +43,13 @@ namespace StSMapGenerator
             _isAvailable = isAvailable;
 
             var highlight = Color.white;
-#if DOTWEEN
+#if DOTWEEN_INSTALLED
             var duration = 0.75f;
 #endif
 
             if (isAvailable)
             {
-#if DOTWEEN
+#if DOTWEEN_INSTALLED
                 _thisImage
                 .DOColor(highlight, duration)
                 .SetLoops(-1, LoopType.Yoyo)
@@ -59,7 +60,7 @@ namespace StSMapGenerator
             }
             else
             {
-#if DOTWEEN
+#if DOTWEEN_INSTALLED
                 _thisImage.DOKill();
                 _thisImage.DOColor(_deactivatedColor, duration * 0.5f)
                     .SetTarget(this);
@@ -76,6 +77,7 @@ namespace StSMapGenerator
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            // TODO: Remove these comments after noting down.
             // If you decide to add full keyboard controls:
             // Move SetScale to another component and call to that component from here.
 
@@ -101,7 +103,7 @@ namespace StSMapGenerator
 
         private void SetScale(float scale, float duration)
         {
-#if DOTWEEN
+#if DOTWEEN_INSTALLED
             transform.DOKill();
 
             (transform as RectTransform)
@@ -124,7 +126,7 @@ namespace StSMapGenerator
 
         private void OnDisable()
         {
-#if DOTWEEN
+#if DOTWEEN_INSTALLED
             DOTween.Kill(this);
             _thisImage.DOKill();
             transform.DOKill();
