@@ -1,0 +1,11 @@
+{
+  "name": "com.tramshy.sts-map-generator",
+  "version": "1.0.0",
+  "displayName": "StS-like Map Generator",
+  "description": "A simple system to easily generate StS-like maps",
+  "unity": "2022.3",
+  "author": {
+    "name": "Trashy aka Simon",
+    "url": "https://big-trashy.itch.io/"
+  }
+}

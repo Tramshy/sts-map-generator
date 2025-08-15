@@ -2,63 +2,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapPlayerTracker : MonoBehaviour
+namespace StSMapGenerator
 {
-    public static MapPlayerTracker Instance;
-
-    private MapGeneration _map;
-    private PointOfInterest _current;
-    private List<PointOfInterest> _currentAvailablePOIs = new List<PointOfInterest>();
-
-    private void Awake()
+    public class MapPlayerTracker : MonoBehaviour
     {
-        if (Instance == null)
-            Instance = this;
-        else
+        public static MapPlayerTracker Instance;
+
+        private MapGeneration _map;
+        private PointOfInterest _current;
+        private List<PointOfInterest> _currentAvailablePOIs = new List<PointOfInterest>();
+
+        private void Awake()
         {
-            Destroy(gameObject);
+            if (Instance == null)
+                Instance = this;
+            else
+            {
+                Destroy(gameObject);
+            }
+
+            _map = GetComponent<MapGeneration>();
         }
 
-        _map = GetComponent<MapGeneration>();
-    }
-
-    public void OnNewMapGenerated()
-    {
-        PointOfInterest current = null;
-
-        for (int i = 0; i < _map.PointOfInterestsPerFloor[0].Length; i++)
+        public void OnNewMapGenerated()
         {
-            current = _map.PointOfInterestsPerFloor[0][i];
+            PointOfInterest current = null;
 
-            if (current == null)
-                continue;
+            for (int i = 0; i < _map.PointOfInterestsPerFloor[0].Length; i++)
+            {
+                current = _map.PointOfInterestsPerFloor[0][i];
 
-            current.SetAvailability(true);
+                if (current == null)
+                    continue;
 
-            _currentAvailablePOIs.Add(current);
-        }
-    }
+                current.SetAvailability(true);
 
-    public void UpdateCurrentPOI(PointOfInterest newPOI)
-    {
-        newPOI.SetDisabledColor(Color.white);
-
-        for (int i = 0; i < _currentAvailablePOIs.Count; i++)
-        {
-            _currentAvailablePOIs[i].SetAvailability(false);
+                _currentAvailablePOIs.Add(current);
+            }
         }
 
-        _currentAvailablePOIs.Clear();
-        _current = newPOI;
-
-        PointOfInterest nextInLine = null;
-
-        for (int i = 0; i < _current.NextPointsOfInterest.Count; i++)
+        public void UpdateCurrentPOI(PointOfInterest newPOI)
         {
-            nextInLine = _current.NextPointsOfInterest[i];
+            newPOI.SetDisabledColor(Color.white);
 
-            nextInLine.SetAvailability(true);
-            _currentAvailablePOIs.Add(nextInLine);
+            for (int i = 0; i < _currentAvailablePOIs.Count; i++)
+            {
+                _currentAvailablePOIs[i].SetAvailability(false);
+            }
+
+            _currentAvailablePOIs.Clear();
+            _current = newPOI;
+
+            PointOfInterest nextInLine = null;
+
+            for (int i = 0; i < _current.NextPointsOfInterest.Count; i++)
+            {
+                nextInLine = _current.NextPointsOfInterest[i];
+
+                nextInLine.SetAvailability(true);
+                _currentAvailablePOIs.Add(nextInLine);
+            }
         }
     }
 }
