@@ -1,0 +1,16 @@
+{
+    "name": "StSMapGenerator",
+    "rootNamespace": "StSMapGenerator",
+    "references": [
+        "GUID:af9b1276b129dd04686261b9e6044a33"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
