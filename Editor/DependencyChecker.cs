@@ -16,9 +16,10 @@ namespace StSMapGenerator.InspectorEditor
 
             if (dotweenType == null)
             {
-                Debug.LogError(
-                    "<b>[MyPackage]</b> DOTween is not installed. " +
-                    "Please install it from the Asset Store or via UPM before using this package."
+                Debug.LogWarning(
+                    "<b>[StS-like Map Generation]</b> DOTween is not installed." +
+                    "Some animation logic will be disabled. DOTween is recommended, but not needed." +
+                    "DOTween can be installed from the Asset Store."
                 );
 
                 // Remove define symbol
