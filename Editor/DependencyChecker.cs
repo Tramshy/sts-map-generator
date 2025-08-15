@@ -10,36 +10,44 @@ namespace StSMapGenerator.InspectorEditor
 
         static DependencyChecker()
         {
-            // Try to find DOTween's main type
-            var dotweenType = System.Type.GetType("DG.Tweening.DOTween, DOTween");
-            string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-
-            if (dotweenType == null)
-            {
-                Debug.LogWarning(
+#if !DOTWEEN
+            Debug.LogWarning(
                     "<b>[StS-like Map Generation]</b> DOTween is not installed." +
-                    "Some animation logic will be disabled. DOTween is recommended, but not needed." +
+                    "Some animation logic will be disabled. DOTween is recommended, but not needed. " +
                     "DOTween can be installed from the Asset Store."
                 );
+#endif
 
-                // Remove define symbol
-                if (defines.Contains(DO_TWEEN_DEFINE_SYMBOL))
-                {
-                    Debug.Log("Removing DOTween define symbol...");
+            //// Try to find DOTween's main type
+            //var dotweenType = System.Type.GetType("DG.Tweening.DOTween, DOTween");
+            //string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
 
-                    defines = defines.Replace(DO_TWEEN_DEFINE_SYMBOL, "").Replace(";;", ";").Trim(';');
-                    PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
-                    Debug.Log("DOTween logic disabled.");
-                }
-            }
-            else if (!defines.Contains(DO_TWEEN_DEFINE_SYMBOL))
-            {
-                Debug.Log("DOTween is installed in project. Adding define symbol...");
+            //if (dotweenType == null)
+            //{
+            //    Debug.LogWarning(
+            //        "<b>[StS-like Map Generation]</b> DOTween is not installed." +
+            //        "Some animation logic will be disabled. DOTween is recommended, but not needed. " +
+            //        "DOTween can be installed from the Asset Store."
+            //    );
 
-                defines += ";" + DO_TWEEN_DEFINE_SYMBOL;
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
-                Debug.Log("DOTween logic enabled!");
-            }
+            //    // Remove define symbol
+            //    if (defines.Contains(DO_TWEEN_DEFINE_SYMBOL))
+            //    {
+            //        Debug.Log("Removing DOTween define symbol...");
+
+            //        defines = defines.Replace(DO_TWEEN_DEFINE_SYMBOL, "").Replace(";;", ";").Trim(';');
+            //        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
+            //        Debug.Log("DOTween logic disabled.");
+            //    }
+            //}
+            //else if (!defines.Contains(DO_TWEEN_DEFINE_SYMBOL))
+            //{
+            //    Debug.Log("DOTween is installed in project. Adding define symbol...");
+
+            //    defines += ";" + DO_TWEEN_DEFINE_SYMBOL;
+            //    PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
+            //    Debug.Log("DOTween logic enabled!");
+            //}
         }
     }
 }

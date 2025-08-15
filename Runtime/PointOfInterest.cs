@@ -1,4 +1,4 @@
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
 using DG.Tweening;
 #endif
 
@@ -42,13 +42,13 @@ namespace StSMapGenerator
             _isAvailable = isAvailable;
 
             var highlight = Color.white;
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
             var duration = 0.75f;
 #endif
 
             if (isAvailable)
             {
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
                 _thisImage
                 .DOColor(highlight, duration)
                 .SetLoops(-1, LoopType.Yoyo)
@@ -59,7 +59,7 @@ namespace StSMapGenerator
             }
             else
             {
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
                 _thisImage.DOKill();
                 _thisImage.DOColor(_deactivatedColor, duration * 0.5f)
                     .SetTarget(this);
@@ -101,7 +101,7 @@ namespace StSMapGenerator
 
         private void SetScale(float scale, float duration)
         {
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
             transform.DOKill();
 
             (transform as RectTransform)
@@ -124,7 +124,7 @@ namespace StSMapGenerator
 
         private void OnDisable()
         {
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
             DOTween.Kill(this);
             _thisImage.DOKill();
             transform.DOKill();
