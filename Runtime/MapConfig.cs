@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace StSMapGenerator
 {
-    public enum NodeTypes
+    public enum LayerTypes
     {
         RandomNode,
         [Tooltip("Most likely used for first floor")] MinorEnemy,
@@ -14,10 +14,10 @@ namespace StSMapGenerator
     [System.Serializable]
     public class MapLayer
     {
-        public NodeTypes LayerType = NodeTypes.RandomNode;
+        public LayerTypes LayerType = LayerTypes.RandomNode;
 
         public float YPaddingFromPreviousLayer = 200;
-        [Range(0f, 1f)] public float RandomizePosition = 1;
+        public float RandomizePosition = 1;
 
         public bool UseRandomRange;
 
@@ -59,21 +59,21 @@ namespace StSMapGenerator
     [System.Serializable]
     public class POIPrefabs
     {
-        [HideInInspector] public NodeTypes ThisNodeType;
+        [HideInInspector] public LayerTypes ThisLayerType;
 
         /// <summary>
         /// This is only used for Custom node types.
         /// </summary>
         [HideInInspector] public string NodeID;
 
-        public PointOfInterest[] PointsOfInterestForThisNodeType;
+        public PointOfInterest[] PointsOfInterestForThisLayerType;
     }
 
     [CreateAssetMenu(fileName = "New Map Config", menuName = "StS Map Generation/Map Config")]
     public class MapConfig : ScriptableObject
     {
         [field: SerializeField] public MapLayer[] LayerLayout;
-        public POIPrefabs[] PrefabsForNodeTypes;
+        public POIPrefabs[] PrefabsForLayerTypes;
 
         [Space(30)]
 
@@ -100,9 +100,9 @@ namespace StSMapGenerator
         [Tooltip("Here you can add new custom node types. " +
                 "If you want a layer to use your custom node type, you will have to select 'Other' when selecting the LayerType. " +
                 "You will then get additional options to determine a custom Node Type")]
-        public string[] CustomNodeTypes;
+        public string[] CustomLayerTypes;
 
-        public PointOfInterest GetRandomPOI(NodeTypes nodeType)
+        public PointOfInterest GetRandomPOI(LayerTypes nodeType)
         {
             return GetRandomFromArray(GetPOIList(nodeType), nodeType.ToString());
         }
@@ -134,12 +134,12 @@ namespace StSMapGenerator
             throw new System.Exception($"POI array for {nodeType} node type is empty.");
         }
 
-        private PointOfInterest[] GetPOIList(NodeTypes nodeType)
+        private PointOfInterest[] GetPOIList(LayerTypes nodeType)
         {
-            for (int i = 0; i < PrefabsForNodeTypes.Length; i++)
+            for (int i = 0; i < PrefabsForLayerTypes.Length; i++)
             {
-                if (PrefabsForNodeTypes[i].ThisNodeType == nodeType)
-                    return PrefabsForNodeTypes[i].PointsOfInterestForThisNodeType;
+                if (PrefabsForLayerTypes[i].ThisLayerType == nodeType)
+                    return PrefabsForLayerTypes[i].PointsOfInterestForThisLayerType;
             }
 
             throw new System.Exception("No POI list found for node type, this should not be possible.");
@@ -147,10 +147,10 @@ namespace StSMapGenerator
 
         private PointOfInterest[] GetPOIList(string nodeType)
         {
-            for (int i = 0; i < PrefabsForNodeTypes.Length; i++)
+            for (int i = 0; i < PrefabsForLayerTypes.Length; i++)
             {
-                if (PrefabsForNodeTypes[i].NodeID == nodeType)
-                    return PrefabsForNodeTypes[i].PointsOfInterestForThisNodeType;
+                if (PrefabsForLayerTypes[i].NodeID == nodeType)
+                    return PrefabsForLayerTypes[i].PointsOfInterestForThisLayerType;
             }
 
             throw new System.Exception("No POI list found for node type, this should not be possible.");

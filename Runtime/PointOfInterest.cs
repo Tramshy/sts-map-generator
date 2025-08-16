@@ -64,7 +64,7 @@ namespace StSMapGenerator
             activatedColor = Color.white;
         }
 
-        public void SetUpSubSeed(int floorN, int xNum)
+        internal void SetUpSubSeed(int floorN, int xNum)
         {
             subSeed = SeedHandler.Instance.HashSubSeed(floorN, xNum);
 
@@ -119,17 +119,11 @@ namespace StSMapGenerator
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!isAvailable)
-                return;
-
             OnHoverEnter();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!isAvailable)
-                return;
-
             OnHoverExit();
         }
 
@@ -138,6 +132,9 @@ namespace StSMapGenerator
         /// </summary>
         protected virtual void OnHoverEnter()
         {
+            if (!isAvailable)
+                return;
+
             var scaleIncrease = 1.5f;
             var duration = 0.5f;
 
@@ -149,6 +146,9 @@ namespace StSMapGenerator
         /// </summary>
         protected virtual void OnHoverExit()
         {
+            if (!isAvailable)
+                return;
+
             var scaleReset = 1;
             var duration = 0.5f;
 

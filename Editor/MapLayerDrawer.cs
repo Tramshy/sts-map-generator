@@ -56,10 +56,10 @@ namespace StSMapGenerator.InspectorEditor
                 fieldRect.y += EditorGUI.GetPropertyHeight(nodeAmount, true) + _fieldPadding * _finalMultiplier;
             }
 
-            NodeTypes layerValue = (NodeTypes)layerType.enumValueIndex;
+            LayerTypes layerValue = (LayerTypes)layerType.enumValueIndex;
 
             // Node ID (Conditional)
-            if (layerValue != NodeTypes.Custom)
+            if (layerValue != LayerTypes.Custom)
                 return;
 
             var parent = GetParentObjectOfProperty(property);
@@ -107,9 +107,9 @@ namespace StSMapGenerator.InspectorEditor
 
             // Condition check for custom node types
             var layerType = property.FindPropertyRelative("LayerType");
-            NodeTypes layerValue = (NodeTypes)layerType.enumValueIndex;
+            LayerTypes layerValue = (LayerTypes)layerType.enumValueIndex;
 
-            if (layerValue != NodeTypes.Custom)
+            if (layerValue != LayerTypes.Custom)
                 return height;
 
             var parent = GetParentObjectOfProperty(property);

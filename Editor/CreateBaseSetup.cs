@@ -5,7 +5,7 @@ namespace StSMapGenerator.InspectorEditor
 {
     public class CreateBaseSetup
     {
-        [MenuItem("Tools/StS-like generation/Create Basic Setup for Scene")]
+        [MenuItem("Tools/StS-Like Generation/Create Basic Setup for Scene")]
         public static void InstantiateBaseSetup()
         {
             var path = "Basic Map Generation Setup";

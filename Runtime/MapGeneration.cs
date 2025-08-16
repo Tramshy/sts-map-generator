@@ -7,8 +7,8 @@ namespace StSMapGenerator
     public class MapGeneration : MonoBehaviour
     {
         [SerializeField] private MapConfig _config;
-
         [SerializeField] private UnityEvent _onMapGenerated;
+
         [SerializeField] private RectTransform _mapContent, _mapBoundingBox, _canvas;
         [SerializeField] private List<PointOfInterest> _pointsOfInterestPrefabs;
         [SerializeField] private GameObject _pathPrefab;
@@ -82,7 +82,7 @@ namespace StSMapGenerator
         private PointOfInterest InstantiatePointOfInterest(int floorN, int xNum)
         {
             var thisLayerType = _config.LayerLayout[floorN].LayerType;
-            var isBossFloor = thisLayerType == NodeTypes.Boss;
+            var isBossFloor = thisLayerType == LayerTypes.Boss;
 
             // Boss layers have xNum recalculated.
             if (PointOfInterestsPerFloor[floorN][xNum] != null && !isBossFloor)
@@ -120,7 +120,7 @@ namespace StSMapGenerator
             Vector2 pos = new Vector2(xPos, yPos);
             PointOfInterest instance = null;
 
-            if (thisLayerType != NodeTypes.Custom)
+            if (thisLayerType != LayerTypes.Custom)
                 instance = Instantiate(_config.GetRandomPOI(thisLayerType), _mapContent);
             else
             {
@@ -140,7 +140,7 @@ namespace StSMapGenerator
             {
                 PointOfInterest nextPOI = InstantiatePointOfInterest(index_i, index_j);
 
-                var isNextBossFloor = _config.LayerLayout[index_i].LayerType == NodeTypes.Boss;
+                var isNextBossFloor = _config.LayerLayout[index_i].LayerType == LayerTypes.Boss;
 
                 // Boss floors need to calculate closest POI's since their positions aren't the same as other floors.
                 if (!isNextBossFloor)

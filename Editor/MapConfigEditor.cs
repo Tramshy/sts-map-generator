@@ -36,7 +36,7 @@ namespace StSMapGenerator.InspectorEditor
             var customNodeTypes = serializedObject.FindProperty("CustomNodeTypes");
 
             // Subtract 1 for custom enum value
-            int enumLength = System.Enum.GetValues(typeof(NodeTypes)).Length - 1;
+            int enumLength = System.Enum.GetValues(typeof(LayerTypes)).Length - 1;
             int amountOfNodeTypes = enumLength;
 
             if (customNodeTypes != null)
@@ -48,7 +48,7 @@ namespace StSMapGenerator.InspectorEditor
             for (int i = 0; i < enumLength; i++)
             {
                 var element = _prefabsForNodeTypesProperty.GetArrayElementAtIndex(i);
-                var enumName = ((NodeTypes)i).ToString();
+                var enumName = ((LayerTypes)i).ToString();
                 element.FindPropertyRelative("ThisNodeType").enumValueIndex = i;
 
                 EditorGUILayout.PropertyField(element, new GUIContent(enumName));
