@@ -54,7 +54,7 @@ You must also create a new `MapConfig` scriptable object, found under "StS Map G
   - If `UseRandomRange` is false, this value will determine how many nodes to spawn. Set to -1 for total randomness.
 * _randomNodeRange
   - If `UseRandomRange` is true, this value will determine the random range.
-* NodeID
+* LayerID
   - A string determining which custom layer type for this layer to use. This field is set using a dropdown menu.
 * YPaddingFromPreviousLayer
 
