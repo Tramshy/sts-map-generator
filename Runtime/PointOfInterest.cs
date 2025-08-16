@@ -1,5 +1,9 @@
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
 using DG.Tweening;
+#endif
+
+#if UNITY_EDITOR
+using UnityEditor;
 #endif
 
 using System.Collections.Generic;
@@ -9,92 +13,142 @@ using UnityEngine.UI;
 
 namespace StSMapGenerator
 {
-    // TODO: Make this abstarct and make everything protected and virtual
-    public class PointOfInterest : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public abstract class PointOfInterest : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public List<PointOfInterest> NextPointsOfInterest { get; set; } = new List<PointOfInterest>();
 
-        private System.Random _rng;
-        private Image _thisImage;
+        /// <summary>
+        /// Created based on sub-seed.
+        /// Use this for all random values for this node to remain consistent per seed.
+        /// </summary>
+        protected System.Random rnd { get; private set; }
+        /// <summary>
+        /// The image of this node.
+        /// </summary>
+        protected Image thisImage;
 
-        private Color _deactivatedColor;
+        /// <summary>
+        /// Color set in SetAvailability method.
+        /// </summary>
+        protected Color deactivatedColor, activatedColor;
 
-        private int _subSeed;
-        public int Weight;
+        public int FloorIndex { get; private set; }
+        protected int subSeed { get; private set; }
 
-        private bool _isAvailable;
+        [Tooltip("A higher value will result in a higher probability of this node being spawned.")]
+        [field: SerializeField] public int Weight { get; private set; }
 
-        private void Awake()
+        /// <summary>
+        /// Set in SetAvailability method by default.
+        /// </summary>
+        protected bool isAvailable;
+
+#if UNITY_EDITOR
+        private void OnValidate()
         {
-            _thisImage = GetComponent<Image>();
+            Weight = Mathf.Clamp(Weight, 0, int.MaxValue);
+        }
+#endif
 
-            _deactivatedColor = _thisImage.color;
+        /// <summary>
+        /// Please call base.Awake for field initialization.
+        /// </summary>
+        protected virtual void Awake()
+        {
+            thisImage = GetComponent<Image>();
+
+            if (thisImage == null)
+                throw new System.NullReferenceException("PointOfInterest object needs an Image component!");
+
+            deactivatedColor = Color.gray;
+            activatedColor = Color.white;
         }
 
         public void SetUpSubSeed(int floorN, int xNum)
         {
-            _subSeed = SeedHandler.Instance.HashSubSeed(floorN, xNum);
+            subSeed = SeedHandler.Instance.HashSubSeed(floorN, xNum);
 
-            _rng = new System.Random(_subSeed);
+            FloorIndex = floorN;
+            rnd = new System.Random(subSeed);
         }
 
-        public void SetAvailability(bool isAvailable)
+        /// <summary>
+        /// Dictates whether or not this node can be selected.
+        /// By default, applies color changes to node depending on isAvailable.
+        /// </summary>
+        public virtual void SetAvailability(bool isAvailable)
         {
-            _isAvailable = isAvailable;
+            this.isAvailable = isAvailable;
 
-            var highlight = Color.white;
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
             var duration = 0.75f;
 #endif
 
             if (isAvailable)
             {
-#if DOTWEEN_INSTALLED
-                _thisImage
-                .DOColor(highlight, duration)
+#if DOTWEEN
+                thisImage
+                .DOColor(activatedColor, duration)
                 .SetLoops(-1, LoopType.Yoyo)
-                .SetTarget(_thisImage);
+                .SetTarget(thisImage);
 #else
-                _thisImage.color = highlight;
+                _thisImage.color = activatedColor;
 #endif
             }
             else
             {
-#if DOTWEEN_INSTALLED
-                _thisImage.DOKill();
-                _thisImage.DOColor(_deactivatedColor, duration * 0.5f)
+#if DOTWEEN
+                thisImage.DOKill();
+                thisImage.DOColor(deactivatedColor, duration * 0.5f)
                     .SetTarget(this);
 #else
-                _thisImage.color = _deactivatedColor;
+                _thisImage.color = deactivatedColor;
 #endif
             }
         }
 
         public void SetDisabledColor(Color color)
         {
-            _deactivatedColor = color;
+            deactivatedColor = color;
+        }
+
+        public void SetEnabledColor(Color color)
+        {
+            activatedColor = color;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            // TODO: Remove these comments after noting down.
-            // If you decide to add full keyboard controls:
-            // Move SetScale to another component and call to that component from here.
-
-            if (!_isAvailable)
+            if (!isAvailable)
                 return;
 
+            OnHoverEnter();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!isAvailable)
+                return;
+
+            OnHoverExit();
+        }
+
+        /// <summary>
+        /// By default, updates scale of node on map.
+        /// </summary>
+        protected virtual void OnHoverEnter()
+        {
             var scaleIncrease = 1.5f;
             var duration = 0.5f;
 
             SetScale(scaleIncrease, duration);
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        /// <summary>
+        /// By default, resets scale increase.
+        /// </summary>
+        protected virtual void OnHoverExit()
         {
-            if (!_isAvailable)
-                return;
-
             var scaleReset = 1;
             var duration = 0.5f;
 
@@ -103,7 +157,7 @@ namespace StSMapGenerator
 
         private void SetScale(float scale, float duration)
         {
-#if DOTWEEN_INSTALLED
+#if DOTWEEN
             transform.DOKill();
 
             (transform as RectTransform)
@@ -116,21 +170,30 @@ namespace StSMapGenerator
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (!_isAvailable)
+            if (!isAvailable)
                 return;
 
             MapPlayerTracker.Instance.UpdateCurrentPOI(this);
 
-            // Add some logic for randomizing battle here and all o' that jazz.
+            OnNodeEnter();
         }
 
-        private void OnDisable()
+        /// <summary>
+        /// Called when a node is available and is selected.
+        /// </summary>
+        public abstract void OnNodeEnter();
+
+#if DOTWEEN
+        /// <summary>
+        /// OnDisable for this class will by default Kill a few DOTween sequences.
+        /// If you are using the default OnHoverEnter / OnHoverExit methods, please call base.OnDisable.
+        /// </summary>
+        protected virtual void OnDisable()
         {
-#if DOTWEEN_INSTALLED
             DOTween.Kill(this);
-            _thisImage.DOKill();
+            thisImage.DOKill();
             transform.DOKill();
-#endif
         }
+#endif
     }
 }

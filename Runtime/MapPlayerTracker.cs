@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StSMapGenerator
@@ -9,7 +8,6 @@ namespace StSMapGenerator
 
         private MapGeneration _map;
         private PointOfInterest _current;
-        private List<PointOfInterest> _currentAvailablePOIs = new List<PointOfInterest>();
 
         private void Awake()
         {
@@ -35,22 +33,25 @@ namespace StSMapGenerator
                     continue;
 
                 current.SetAvailability(true);
-
-                _currentAvailablePOIs.Add(current);
             }
         }
 
-        public void UpdateCurrentPOI(PointOfInterest newPOI)
+        /// <summary>
+        /// Handles availability logic and calls UpdateCurrentPOIVisuals.
+        /// By default, it will disable every node for previous floor and then enable new nodes.
+        /// </summary>
+        public virtual void UpdateCurrentPOI(PointOfInterest newPOI)
         {
-            newPOI.SetDisabledColor(Color.white);
-
-            for (int i = 0; i < _currentAvailablePOIs.Count; i++)
-            {
-                _currentAvailablePOIs[i].SetAvailability(false);
-            }
-
-            _currentAvailablePOIs.Clear();
             _current = newPOI;
+            UpdateCurrentPOIVisuals();
+
+            var thisFloor = _map.PointOfInterestsPerFloor[_current.FloorIndex];
+
+            for (int i = 0; i < thisFloor.Length; i++)
+            {
+                if (thisFloor[i] != null)
+                    thisFloor[i].SetAvailability(false);
+            }
 
             PointOfInterest nextInLine = null;
 
@@ -59,8 +60,16 @@ namespace StSMapGenerator
                 nextInLine = _current.NextPointsOfInterest[i];
 
                 nextInLine.SetAvailability(true);
-                _currentAvailablePOIs.Add(nextInLine);
             }
+        }
+
+        /// <summary>
+        /// Handles visual changes to current node after updating.
+        /// By default, it sets the deactivated color to white. This results in a path of nodes colored white.
+        /// </summary>
+        public virtual void UpdateCurrentPOIVisuals()
+        {
+            _current.SetDisabledColor(Color.white);
         }
     }
 }
