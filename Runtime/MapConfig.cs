@@ -4,10 +4,11 @@ namespace StSMapGenerator
 {
     public enum LayerTypes
     {
-        RandomNode,
         [Tooltip("Most likely used for first floor")] MinorEnemy,
-        [Tooltip("Most likely used for last floor")] Boss,
+        RandomNode,
+        RestSpot,
         Treasure,
+        [Tooltip("Most likely used for last floor")] Boss,
         Custom
     }
 
