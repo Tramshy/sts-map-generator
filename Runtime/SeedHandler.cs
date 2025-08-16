@@ -30,6 +30,7 @@ namespace StSMapGenerator
 
         private void Awake()
         {
+            transform.parent = null;
             DontDestroyOnLoad(gameObject);
 
             if (Instance == null)

@@ -29,9 +29,9 @@ namespace StSMapGenerator
         [System.NonSerialized] private int? _randomNodeAmount = null;
 
         /// <summary>
-        /// This is only used for Custom node types.
+        /// This is only used for Custom layer types.
         /// </summary>
-        public string NodeID;
+        public string LayerID;
 
         public int AmountOfNodes
         {
@@ -62,9 +62,9 @@ namespace StSMapGenerator
         [HideInInspector] public LayerTypes ThisLayerType;
 
         /// <summary>
-        /// This is only used for Custom node types.
+        /// This is only used for Custom layer types.
         /// </summary>
-        [HideInInspector] public string NodeID;
+        [HideInInspector] public string LayerID;
 
         public PointOfInterest[] PointsOfInterestForThisLayerType;
     }
@@ -97,22 +97,22 @@ namespace StSMapGenerator
 
         [Space(20)]
 
-        [Tooltip("Here you can add new custom node types. " +
-                "If you want a layer to use your custom node type, you will have to select 'Other' when selecting the LayerType. " +
-                "You will then get additional options to determine a custom Node Type")]
+        [Tooltip("Here you can add new custom layer types. " +
+                "If you want a layer to use your custom layer type, you will have to select 'Other' when selecting the LayerType. " +
+                "You will then get additional options to determine a custom layer Type")]
         public string[] CustomLayerTypes;
 
-        public PointOfInterest GetRandomPOI(LayerTypes nodeType)
+        public PointOfInterest GetRandomPOI(LayerTypes LayerType)
         {
-            return GetRandomFromArray(GetPOIList(nodeType), nodeType.ToString());
+            return GetRandomFromArray(GetPOIList(LayerType), LayerType.ToString());
         }
 
-        public PointOfInterest GetRandomPOI(string nodeType)
+        public PointOfInterest GetRandomPOI(string layerType)
         {
-            return GetRandomFromArray(GetPOIList(nodeType), nodeType);
+            return GetRandomFromArray(GetPOIList(layerType), layerType);
         }
 
-        private PointOfInterest GetRandomFromArray(PointOfInterest[] poiList, string nodeType)
+        private PointOfInterest GetRandomFromArray(PointOfInterest[] poiList, string layerType)
         {
             var totalWeight = 0;
 
@@ -131,29 +131,29 @@ namespace StSMapGenerator
                 random -= poiList[i].Weight;
             }
 
-            throw new System.Exception($"POI array for {nodeType} node type is empty.");
+            throw new System.Exception($"POI array for {layerType} layer type is empty.");
         }
 
-        private PointOfInterest[] GetPOIList(LayerTypes nodeType)
+        private PointOfInterest[] GetPOIList(LayerTypes layerType)
         {
             for (int i = 0; i < PrefabsForLayerTypes.Length; i++)
             {
-                if (PrefabsForLayerTypes[i].ThisLayerType == nodeType)
+                if (PrefabsForLayerTypes[i].ThisLayerType == layerType)
                     return PrefabsForLayerTypes[i].PointsOfInterestForThisLayerType;
             }
 
-            throw new System.Exception("No POI list found for node type, this should not be possible.");
+            throw new System.Exception("No POI list found for layer type, this should not be possible.");
         }
 
-        private PointOfInterest[] GetPOIList(string nodeType)
+        private PointOfInterest[] GetPOIList(string layerType)
         {
             for (int i = 0; i < PrefabsForLayerTypes.Length; i++)
             {
-                if (PrefabsForLayerTypes[i].NodeID == nodeType)
+                if (PrefabsForLayerTypes[i].LayerID == layerType)
                     return PrefabsForLayerTypes[i].PointsOfInterestForThisLayerType;
             }
 
-            throw new System.Exception("No POI list found for node type, this should not be possible.");
+            throw new System.Exception("No POI list found for layer type, this should not be possible.");
         }
 
         public void ClearMapLayerData()

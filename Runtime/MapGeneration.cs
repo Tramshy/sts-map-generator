@@ -10,7 +10,9 @@ namespace StSMapGenerator
         [SerializeField] private UnityEvent _onMapGenerated;
 
         [SerializeField] private RectTransform _mapContent, _mapBoundingBox, _canvas;
-        [SerializeField] private List<PointOfInterest> _pointsOfInterestPrefabs;
+
+        [Space(25)]
+
         [SerializeField] private GameObject _pathPrefab;
 
         public PointOfInterest[][] PointOfInterestsPerFloor { get; set; }
@@ -124,7 +126,11 @@ namespace StSMapGenerator
                 instance = Instantiate(_config.GetRandomPOI(thisLayerType), _mapContent);
             else
             {
-                instance = Instantiate(_config.GetRandomPOI(_config.LayerLayout[floorN].NodeID), _mapContent);
+                if (_config.LayerLayout[floorN].LayerID == "")
+                    throw new System.Exception($"Layer at index: {floorN} has a layer type of custom, but not LayerID has been set!\n" +
+                                               $"If there is no option to set LayerID, then no custom layer types have been created!");
+
+                instance = Instantiate(_config.GetRandomPOI(_config.LayerLayout[floorN].LayerID), _mapContent);
             }
 
             instance.SetUpSubSeed(floorN, xNum);

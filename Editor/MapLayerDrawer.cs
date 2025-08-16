@@ -63,7 +63,7 @@ namespace StSMapGenerator.InspectorEditor
                 return;
 
             var parent = GetParentObjectOfProperty(property);
-            var optionsFieldInfo = parent.GetType().GetField("CustomNodeTypes",
+            var optionsFieldInfo = parent.GetType().GetField("CustomLayerTypes",
                                     BindingFlags.Public | BindingFlags.Instance);
 
             if (optionsFieldInfo == null || optionsFieldInfo.FieldType != typeof(string[]))
@@ -80,10 +80,10 @@ namespace StSMapGenerator.InspectorEditor
 
             fieldRect.y += 10;
 
-            var nodeID = property.FindPropertyRelative("NodeID");
+            var nodeID = property.FindPropertyRelative("LayerID");
 
             int currentIndex = Mathf.Max(0, System.Array.IndexOf(options, nodeID.stringValue));
-            int selectedIndex = EditorGUI.Popup(fieldRect, "Custom Node Type Data", currentIndex, options);
+            int selectedIndex = EditorGUI.Popup(fieldRect, "Custom Layer Type Data", currentIndex, options);
 
             if (selectedIndex >= 0 && selectedIndex < options.Length)
             {
@@ -113,7 +113,7 @@ namespace StSMapGenerator.InspectorEditor
                 return height;
 
             var parent = GetParentObjectOfProperty(property);
-            var optionsFieldInfo = parent.GetType().GetField("CustomNodeTypes",
+            var optionsFieldInfo = parent.GetType().GetField("CustomLayerTypes",
                                     BindingFlags.Public | BindingFlags.Instance);
             var optionsLength = ((string[])optionsFieldInfo.GetValue(parent)).Length;
 

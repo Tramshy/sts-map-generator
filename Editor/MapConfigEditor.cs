@@ -10,7 +10,7 @@ namespace StSMapGenerator.InspectorEditor
 
         private void OnEnable()
         {
-            _prefabsForNodeTypesProperty = serializedObject.FindProperty("PrefabsForNodeTypes");
+            _prefabsForNodeTypesProperty = serializedObject.FindProperty("PrefabsForLayerTypes");
         }
 
         public override void OnInspectorGUI()
@@ -21,7 +21,7 @@ namespace StSMapGenerator.InspectorEditor
             {
                 do
                 {
-                    if (iterator.name == "m_Script" || iterator.name == "PrefabsForNodeTypes")
+                    if (iterator.name == "m_Script" || iterator.name == "PrefabsForLayerTypes")
                         continue;
 
                     EditorGUILayout.PropertyField(iterator, true);
@@ -29,11 +29,11 @@ namespace StSMapGenerator.InspectorEditor
             }
 
             GUILayout.Space(25);
-            GUILayout.Label("PrefabsForNodeTypes");
+            GUILayout.Label("Prefabs For Layer Types");
 
             MapConfig config = (MapConfig)target;
 
-            var customNodeTypes = serializedObject.FindProperty("CustomNodeTypes");
+            var customNodeTypes = serializedObject.FindProperty("CustomLayerTypes");
 
             // Subtract 1 for custom enum value
             int enumLength = System.Enum.GetValues(typeof(LayerTypes)).Length - 1;
@@ -49,7 +49,7 @@ namespace StSMapGenerator.InspectorEditor
             {
                 var element = _prefabsForNodeTypesProperty.GetArrayElementAtIndex(i);
                 var enumName = ((LayerTypes)i).ToString();
-                element.FindPropertyRelative("ThisNodeType").enumValueIndex = i;
+                element.FindPropertyRelative("ThisLayerType").enumValueIndex = i;
 
                 EditorGUILayout.PropertyField(element, new GUIContent(enumName));
             }
@@ -64,8 +64,8 @@ namespace StSMapGenerator.InspectorEditor
                 var element = _prefabsForNodeTypesProperty.GetArrayElementAtIndex(i);
                 var customNodeName = customNodeTypes.GetArrayElementAtIndex(customNodeIndex);
                 customNodeIndex++;
-                element.FindPropertyRelative("ThisNodeType").enumValueIndex = enumLength;
-                element.FindPropertyRelative("NodeID").stringValue = customNodeName.stringValue;
+                element.FindPropertyRelative("ThisLayerType").enumValueIndex = enumLength;
+                element.FindPropertyRelative("LayerID").stringValue = customNodeName.stringValue;
 
                 EditorGUILayout.PropertyField(element, new GUIContent(customNodeName.stringValue));
             }

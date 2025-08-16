@@ -92,7 +92,7 @@ namespace StSMapGenerator
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetTarget(thisImage);
 #else
-                _thisImage.color = activatedColor;
+                thisImage.color = activatedColor;
 #endif
             }
             else
@@ -102,7 +102,7 @@ namespace StSMapGenerator
                 thisImage.DOColor(deactivatedColor, duration * 0.5f)
                     .SetTarget(this);
 #else
-                _thisImage.color = deactivatedColor;
+                thisImage.color = deactivatedColor;
 #endif
             }
         }
