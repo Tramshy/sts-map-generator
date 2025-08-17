@@ -69,11 +69,13 @@ Navigate to `Tools/StS-Like Generation/Create Basic Setup for Scene` in the top 
 ### PointOfInterest Class
 This class handles things like hovering over (using the `OnHoverEnter` and `OnHoverExit` methods) and selecting a node (using the abstract `OnNodeEnter` method).
 
-The `Awake` method is being used by the class to initialize some values. If the `Awake` method is needed, call `base.Awake` in the override method, unless you want to handle initialization yourself. The `OnDisable` method is also already in use, depending on if `DOTween` is installed for a project, and can be overridden in the same way.
-
 #### Methods
+* Awake
+  - The `Awake` method is being used by the class to initialize some values. If the `Awake` method is needed, call `base.Awake` in the override method, unless you want to handle initialization yourself. The `OnDisable` method is also already in use, depending on if `DOTween` is installed for a project, and can be overridden in the same way.
 * SetAvailability
-  - Determines whether or not the node is available to be selected. By default also changes node color based on availability; however, this can be overridden. If you do override, make sure to set the `isAvailable` field properly.
+  - Determines whether or not the node is available to be selected. Simply sets the `isAvailable` field and calls `SetAvailabilityVisuals`.
+* SetAvailabilityVisuals
+  - By default changes node color based on `isAvailable`; however, this can be overridden.
 * OnHoverEnter & OnHoverExit
   - Determines behavior when pointer enters and exits the node. By default, it changes scale. Can be overridden.
 * OnNodeEnter
@@ -98,10 +100,20 @@ The `Awake` method is being used by the class to initialize some values. If the 
 This class handles the player's position on the map. This class calls `SetAvailability` for all relevant nodes. This class is a `Singleton`
 
 #### Methods
+* Awake
+  - The `Awake` method is being used by the class to initialize some values and set up `Singleton`. If the `Awake` method is needed, call `base.Awake` in the override method, unless you want to handle initialization yourself.
 * OnNewMapGenerated
   - Called from `_onMapGenerated` `UnityEvent` from `MapGeneration`
 * UpdateCurrentPOI
-  - Moves the player to a new POI. By default, updates the availability of the previous floor before moving the player up to the next node. By default also changes the selected POI's `deactivatedColor` to white to create a line of white POI's along the path. Can be overridden.
+  - Updates what nodes are selectable by the player by calling `SetAvailability` on relevant nodes. By default, calls `SetAvailability` of the previous floor to false, before moving up to the next node and calling `SetAvailability` to true for next nodes. By default, calls `UpdateCurrentPOIVisuals` right after updating `currentNode`. Can be overridden.
+* UpdateCurrentPOIVisuals
+  - By default changes the `currentNode`s `deactivatedColor` to white. This results in a line of white POI's along the selected path. Can be overridden.
+
+#### Fields
+* Instance
+  - The `Singleton` instance of this class.
+* currentNode
+  - The current POI selected by the player.
 
 ## License
 This package is licensed under the MIT License. For more information read: `LICENSE`.
