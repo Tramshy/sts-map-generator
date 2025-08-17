@@ -1,7 +1,3 @@
-#if DOTWEEN
-using DG.Tweening;
-#endif
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -87,30 +83,11 @@ namespace StSMapGenerator
         /// </summary>
         protected virtual void SetAvailabilityVisuals()
         {
-#if DOTWEEN
-            var duration = 0.75f;
-#endif
-
             if (isAvailable)
-            {
-#if DOTWEEN
-                thisImage
-                .DOColor(activatedColor, duration)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetTarget(thisImage);
-#else
                 thisImage.color = activatedColor;
-#endif
-            }
             else
             {
-#if DOTWEEN
-                thisImage.DOKill();
-                thisImage.DOColor(deactivatedColor, duration * 0.5f)
-                    .SetTarget(this);
-#else
                 thisImage.color = deactivatedColor;
-#endif
             }
         }
 
@@ -164,15 +141,7 @@ namespace StSMapGenerator
 
         private void SetScale(float scale, float duration)
         {
-#if DOTWEEN
-            transform.DOKill();
-
-            (transform as RectTransform)
-            .DOScale(scale, duration)
-            .SetTarget(transform);
-#else
             (transform as RectTransform).localScale = Vector2.one * scale;
-#endif
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -189,18 +158,5 @@ namespace StSMapGenerator
         /// Called when a node is available and is selected.
         /// </summary>
         public abstract void OnNodeEnter();
-
-#if DOTWEEN
-        /// <summary>
-        /// OnDisable for this class will by default Kill a few DOTween sequences.
-        /// If you are using the default OnHoverEnter / OnHoverExit methods, please call base.OnDisable.
-        /// </summary>
-        protected virtual void OnDisable()
-        {
-            DOTween.Kill(this);
-            thisImage.DOKill();
-            transform.DOKill();
-        }
-#endif
     }
 }
