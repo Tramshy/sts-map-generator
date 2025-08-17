@@ -9,6 +9,8 @@ namespace StSMapGenerator
         private RectTransform[] _mapNodes;
         private RectTransform _thisRectTransform;
 
+        [SerializeField] private float _finalLayerHeightPadding = 300;
+
         private void Awake()
         {
             _thisRectTransform = GetComponent<RectTransform>();
@@ -56,8 +58,7 @@ namespace StSMapGenerator
             float width = maxX - minX;
             float height = maxY - minY;
 
-            var extraHeightPadding = 300;
-            height += extraHeightPadding;
+            height += _finalLayerHeightPadding;
 
             // Resize content rect to fit all nodes
             _thisRectTransform.sizeDelta = new Vector2(width, height);
