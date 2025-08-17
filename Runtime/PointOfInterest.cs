@@ -74,12 +74,19 @@ namespace StSMapGenerator
 
         /// <summary>
         /// Dictates whether or not this node can be selected.
-        /// By default, applies color changes to node depending on isAvailable.
         /// </summary>
-        public virtual void SetAvailability(bool isAvailable)
+        public void SetAvailability(bool isAvailable)
         {
             this.isAvailable = isAvailable;
 
+            SetAvailabilityVisuals();
+        }
+
+        /// <summary>
+        /// By default, applies color changes to node depending on isAvailable.
+        /// </summary>
+        protected virtual void SetAvailabilityVisuals()
+        {
 #if DOTWEEN
             var duration = 0.75f;
 #endif
