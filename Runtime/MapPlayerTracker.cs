@@ -7,9 +7,9 @@ namespace StSMapGenerator
         public static MapPlayerTracker Instance;
 
         private MapGeneration _map;
-        private PointOfInterest _current;
+        protected PointOfInterest currentNode;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             if (Instance == null)
                 Instance = this;
@@ -42,10 +42,10 @@ namespace StSMapGenerator
         /// </summary>
         public virtual void UpdateCurrentPOI(PointOfInterest newPOI)
         {
-            _current = newPOI;
+            currentNode = newPOI;
             UpdateCurrentPOIVisuals();
 
-            var thisFloor = _map.PointOfInterestsPerFloor[_current.FloorIndex];
+            var thisFloor = _map.PointOfInterestsPerFloor[currentNode.FloorIndex];
 
             for (int i = 0; i < thisFloor.Length; i++)
             {
@@ -55,9 +55,9 @@ namespace StSMapGenerator
 
             PointOfInterest nextInLine = null;
 
-            for (int i = 0; i < _current.NextPointsOfInterest.Count; i++)
+            for (int i = 0; i < currentNode.NextPointsOfInterest.Count; i++)
             {
-                nextInLine = _current.NextPointsOfInterest[i];
+                nextInLine = currentNode.NextPointsOfInterest[i];
 
                 nextInLine.SetAvailability(true);
             }
@@ -69,7 +69,7 @@ namespace StSMapGenerator
         /// </summary>
         public virtual void UpdateCurrentPOIVisuals()
         {
-            _current.SetDisabledColor(Color.white);
+            currentNode.SetDisabledColor(Color.white);
         }
     }
 }

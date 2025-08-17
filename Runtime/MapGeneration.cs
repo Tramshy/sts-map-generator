@@ -13,13 +13,15 @@ namespace StSMapGenerator
 
         [Space(25)]
 
+        [Tooltip("Prefab can be LineRenderer.")]
         [SerializeField] private GameObject _pathPrefab;
+        private LineRenderer _lineRenderer;
 
         public PointOfInterest[][] PointOfInterestsPerFloor { get; set; }
         private List<PointOfInterest> _pointsOfInterest = new();
         private List<int> _bossFloors = new List<int>();
 
-        [SerializeField] private float _xPadding, _edgeYOffset = 100;
+        [SerializeField] private float _xPadding;
         private float _xMaxSize;
         private float _lineLength;
         private float _lineHeight;
@@ -32,6 +34,12 @@ namespace StSMapGenerator
         {
             _lineLength = _pathPrefab.GetComponent<RectTransform>().rect.width;
             _lineHeight = _pathPrefab.GetComponent<RectTransform>().rect.height;
+
+            if (_pathPrefab.TryGetComponent<LineRenderer>(out _lineRenderer))
+            {
+                _lineRenderer.loop = false;
+                _lineRenderer.useWorldSpace = false;
+            }
         }
 
         private void Start()
@@ -98,7 +106,7 @@ namespace StSMapGenerator
 
             float xSize = _xMaxSize / _config.MaxWidth;
             float xPos = ((xSize * xNum) + (xSize * 0.5f)) - _xMaxSize * 0.5f;
-            float yPos = _totalPaddingPerFloor[floorN] + _edgeYOffset;
+            float yPos = _totalPaddingPerFloor[floorN];
 
             if (isBossFloor)
             {
@@ -299,6 +307,28 @@ namespace StSMapGenerator
             var thisTransform = thisPoint.transform as RectTransform;
             var nextTransform = nextPoint.transform as RectTransform;
 
+            if (_lineRenderer != null)
+                CreateLineRendererElement(thisTransform, nextTransform);
+            else
+            {
+                CreateIndividualLineElements(thisTransform, nextTransform);
+            }
+        }
+
+        private void CreateLineRendererElement(RectTransform thisTransform, RectTransform nextTransform)
+        {
+            LineRenderer lineCreated = Instantiate(_lineRenderer);
+
+            var lineRectTransform = lineCreated.transform as RectTransform;
+            lineRectTransform.SetParent(_mapContent, false);
+
+            lineCreated.positionCount = 2;
+            lineCreated.SetPosition(0, thisTransform.anchoredPosition);
+            lineCreated.SetPosition(1, nextTransform.anchoredPosition);
+        }
+
+        private void CreateIndividualLineElements(RectTransform thisTransform, RectTransform nextTransform)
+        {
             Vector2 dir = (nextTransform.anchoredPosition - thisTransform.anchoredPosition).normalized;
 
             float distance = Vector3.Distance(thisTransform.anchoredPosition, nextTransform.anchoredPosition);
@@ -318,14 +348,15 @@ namespace StSMapGenerator
             for (int i = 0; i < num; i++)
             {
                 Vector2 pos = pos_i + ((_lineLength + pad) * i * dir);
-                GameObject lineCreated = Instantiate(_pathPrefab);
-                var lineRectTransform = lineCreated.transform as RectTransform;
 
+                GameObject lineCreated = Instantiate(_pathPrefab);
+
+                var lineRectTransform = lineCreated.transform as RectTransform;
                 lineRectTransform.SetParent(_mapContent, false);
                 lineRectTransform.anchoredPosition = pos;
                 lineRectTransform.anchoredPosition -= Vector2.up * (_lineHeight / 2f);
 
-                LookAt2D(lineRectTransform, nextPoint.transform.position);
+                LookAt2D(lineRectTransform, nextTransform.position);
             }
         }
 
