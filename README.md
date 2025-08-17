@@ -69,6 +69,11 @@ You must also create a new `MapConfig` scriptable object, found under "StS Map G
   - The padding between the left and right edges of the map background in pixel units.
 * The remaining fields can be ignored.
 
+### MapContentResizer Fields
+* _finalLayerHeightPadding
+  - The extra padding to apply to the final layer of the map in pixel units.
+* The remaining fields can be ignored.
+
 ### Creating Base Setup
 Navigate to `Tools/StS-Like Generation/Create Basic Setup for Scene` in the top menu. This will create a basic setup for you to adjust. You must create a UI `EventSystem` for this to work. It is also recommended to set the scene's main camera to the `Render Camera` of the `Map Canvas`. 
 
