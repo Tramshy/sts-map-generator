@@ -149,13 +149,12 @@ namespace StSMapGenerator
             if (!isAvailable)
                 return;
 
-            MapPlayerTracker.Instance.UpdateCurrentPOI(this);
-
             OnNodeEnter();
         }
 
         /// <summary>
         /// Called when a node is available and is selected.
+        /// Make sure to call MapPlayerTracker.Instance.UpdateCurrentPOI(this); at some point when this method is called.
         /// </summary>
         public abstract void OnNodeEnter();
     }
