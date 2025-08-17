@@ -119,4 +119,4 @@ This class handles the player's position on the map. This class calls `SetAvaila
 This package is licensed under the MIT License. For more information read: `LICENSE`.
 
 ## Additional Notes About Dependency
-The base implementation of `SetAvailability` uses `DOTween` for color and scale changing. However, this package is not dependent on `DOTween`. The package will automatically detect whether you have `DOTween` imported for the project and act accordingly.
+The base implementation of `SetAvailabilityVisuals` uses `DOTween` for color and scale changing. However, this package is not dependent on `DOTween`. The package will automatically detect whether you have `DOTween` imported for the project and act accordingly.
