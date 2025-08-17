@@ -62,6 +62,13 @@ You must also create a new `MapConfig` scriptable object, found under "StS Map G
 * PointsOfInterestForThisLayerType
   - The prefabs to spawn for this layer type.
 
+### MapGeneration Fields
+* _pathPrefab
+  - The prefab for the path used between nodes on the map. The system can handle both a `LineRenderer` and `UI` approach. This means that if this prefab has a `LineRenderer` component, the path will be created using it, otherwise the system will copy this prefab several times and space out as individual path objects.
+* _xPadding
+  - The padding between the left and right edges of the map background in pixel units.
+* The remaining fields can be ignored.
+
 ### Creating Base Setup
 Navigate to `Tools/StS-Like Generation/Create Basic Setup for Scene` in the top menu. This will create a basic setup for you to adjust. You must create a UI `EventSystem` for this to work. It is also recommended to set the scene's main camera to the `Render Camera` of the `Map Canvas`. 
 
