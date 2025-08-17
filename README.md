@@ -83,7 +83,7 @@ This class handles things like hovering over (using the `OnHoverEnter` and `OnHo
 
 #### Methods
 * Awake
-  - The `Awake` method is being used by the class to initialize some values. If the `Awake` method is needed, call `base.Awake` in the override method, unless you want to handle initialization yourself. The `OnDisable` method is also already in use, depending on if `DOTween` is installed for a project, and can be overridden in the same way.
+  - The `Awake` method is being used by the class to initialize some values. If the `Awake` method is needed, call `base.Awake` in the override method, unless you want to handle initialization yourself.
 * SetAvailability
   - Determines whether or not the node is available to be selected. Simply sets the `isAvailable` field and calls `SetAvailabilityVisuals`.
 * SetAvailabilityVisuals
@@ -129,6 +129,3 @@ This class handles the player's position on the map. This class calls `SetAvaila
 
 ## License
 This package is licensed under the MIT License. For more information read: `LICENSE`.
-
-## Additional Notes About Dependency
-The base implementation of `SetAvailabilityVisuals` uses `DOTween` for color and scale changing. However, this package is not dependent on `DOTween`. The package will automatically detect whether you have `DOTween` imported for the project and act accordingly.
