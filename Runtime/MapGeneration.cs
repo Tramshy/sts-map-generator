@@ -125,7 +125,7 @@ namespace StSMapGenerator
             }
 
             xPos += Random.Range(-xSize * 0.25f, xSize * 0.25f) * _config.LayerLayout[floorN].RandomizePosition;
-            yPos += Random.Range(-_config.LayerLayout[1].YPaddingFromPreviousLayer * 0.25f, _config.LayerLayout[1].YPaddingFromPreviousLayer * 0.25f) * _config.LayerLayout[floorN].RandomizePosition;
+            yPos += Random.Range(-_config.LayerLayout[floorN].YPaddingFromPreviousLayer * 0.25f, _config.LayerLayout[floorN].YPaddingFromPreviousLayer * 0.25f) * _config.LayerLayout[floorN].RandomizePosition;
 
             Vector2 pos = new Vector2(xPos, yPos);
             PointOfInterest instance = null;
